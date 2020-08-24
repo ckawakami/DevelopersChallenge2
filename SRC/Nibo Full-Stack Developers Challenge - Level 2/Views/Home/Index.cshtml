@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@model Nibo_Full_Stack_Developers_Challenge___Level_2.Models.FileData
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("StreamFiles", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <h1>Conciliação</h1>
+            <label for="file">Carregar Arquivos:</label>
+            <input type="file" name="files" id="files" multiple /><br />
+            <p><input type="submit" value="Enviar Arquivos" /></p>
+            <p>@ViewBag.ResponseMessage</p>
+        }
+        @using (Html.BeginForm("ClearData", "Home", FormMethod.Post))
+        {
+            if (Model != null && Model.TransactionDetails != null && Model.TransactionDetails.Count > 0)
+            {
+                @Html.AntiForgeryToken()
+                <p><input type="submit" value="Limpar Dados" /></p>
+            }
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("SaveFiles", "Home", FormMethod.Post))
+        {
+            if (Model != null && Model.TransactionDetails != null)
+            {
+                if (Model.TransactionDetails.Count > 0)
+                {
+                    <table class="table">
+                        <tr>
+                            <th>Data da Operação</th>
+                            <th>Valor</th>
+                            <th>Tipo</th>
+                            <th>Descricao</th>
+                        </tr>
+                        @foreach (var item in Model.TransactionDetails)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DatePosted)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TransactionAmmount)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TransactionType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Memo)
+                                </td>
+                            </tr>
+                        }
+                        <tfoot>
+                            <tr>
+                                <th scope="row">Total</th>
+                                <td>@Html.DisplayFor(modelItem => Model.Total)</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    @Html.AntiForgeryToken()
+                    <input type="submit" value="Salvar" />
+                }
+                else
+                {
+                    <p>Não foram encontrados registros ou os registros já foram conciliados anteriormente.</p>
+                }
+
+            }
+        }
+    </div>
+</div>
